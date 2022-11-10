@@ -13,6 +13,7 @@ async function bootstrap() {
     .setDescription('User Manager')
     .setVersion('1.0.0')
     .addTag('status')
+    .addTag('user')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
