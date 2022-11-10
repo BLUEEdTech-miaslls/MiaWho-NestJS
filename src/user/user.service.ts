@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
@@ -11,6 +12,8 @@ export class UserService {
   }
 
   create(dto: CreateUserDto) {
-    return JSON.stringify(dto);
+    const data: User = { ...dto };
+
+    return this.prisma.user.create({ data });
   }
 }
