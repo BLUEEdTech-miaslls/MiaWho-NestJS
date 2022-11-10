@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import { User } from './entities/user.entity';
@@ -13,19 +17,21 @@ export class UserService {
     return this.prisma.user.findMany();
   }
 
-  findOne(id: string): Promise<User> {
-    return this.prisma.user.findUnique({ where: { id } });
+  async findById(id: string): Promise<User> {
+    const record = await this.prisma.user.findUnique({ where: { id } });
+    if (!record) throw new NotFoundException(`user not found`);
+    return record;
   }
 
   create(dto: CreateUserDto): Promise<User> {
     const data: User = { ...dto };
-
-    return this.prisma.user.create({ data });
+    return this.prisma.user.create({ data }).catch(this.handleError);
   }
 
-  update(id: string, dto: UpdateUserDto): Promise<User> {
-    const data: Partial<User> = { ...dto };
+  async update(id: string, dto: UpdateUserDto): Promise<User> {
+    await this.findById(id);
 
+    const data: Partial<User> = { ...dto };
     return this.prisma.user.update({
       where: { id },
       data,
@@ -33,6 +39,13 @@ export class UserService {
   }
 
   async delete(id: string): Promise<void> {
+    await this.findById(id);
     await this.prisma.user.delete({ where: { id } });
+  }
+
+  handleError(error: Error) {
+    console.log(error.message);
+    throw new UnprocessableEntityException(error.message);
+    return undefined;
   }
 }
