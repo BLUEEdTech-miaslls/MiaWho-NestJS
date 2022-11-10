@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { User } from './entities/user.entity';
@@ -33,5 +41,11 @@ export class UserController {
   @ApiOperation({ summary: 'update user info' })
   update(@Param('id') id: string, @Body() dto: UpdateUserDto): Promise<User> {
     return this.userService.update(id, dto);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'delete user' })
+  delete(@Param('id') id: string): Promise<void> {
+    return this.userService.delete(id);
   }
 }
