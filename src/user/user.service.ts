@@ -7,11 +7,15 @@ import { CreateUserDto } from './dto/create-user.dto';
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
+  findAll(): Promise<User[]> {
     return this.prisma.user.findMany();
   }
 
-  create(dto: CreateUserDto) {
+  findOne(id: string): Promise<User> {
+    return this.prisma.user.findUnique({ where: { id } });
+  }
+
+  create(dto: CreateUserDto): Promise<User> {
     const data: User = { ...dto };
 
     return this.prisma.user.create({ data });
