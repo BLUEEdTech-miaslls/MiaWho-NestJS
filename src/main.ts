@@ -13,7 +13,9 @@ async function bootstrap() {
     .setDescription('User Manager')
     .setVersion('1.0.0')
     .addTag('status')
+    .addTag('auth')
     .addTag('user')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
