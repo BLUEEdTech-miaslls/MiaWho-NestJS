@@ -8,8 +8,11 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
@@ -23,12 +26,16 @@ export class UserController {
 
   @Get()
   @ApiOperation({ summary: 'list all users' })
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   findAll() {
     return this.userService.findAll();
   }
 
   @Get(':id')
   @ApiOperation({ summary: 'find user by id' })
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   findById(@Param('id') id: string): Promise<User> {
     return this.userService.findById(id);
   }
@@ -41,6 +48,8 @@ export class UserController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'update user info' })
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   update(@Param('id') id: string, @Body() dto: UpdateUserDto): Promise<User> {
     return this.userService.update(id, dto);
   }
@@ -48,6 +57,8 @@ export class UserController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'delete user' })
+  @UseGuards(AuthGuard())
+  @ApiBearerAuth()
   delete(@Param('id') id: string): Promise<void> {
     return this.userService.delete(id);
   }

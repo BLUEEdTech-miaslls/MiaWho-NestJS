@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { LoginDto } from './dto/login.dto';
@@ -7,7 +8,10 @@ import { LoginResponseDto } from './dto/login-response.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwt: JwtService,
+  ) {}
 
   async login(dto: LoginDto): Promise<LoginResponseDto> {
     const { email, password } = dto;
@@ -27,7 +31,7 @@ export class AuthService {
     delete user.password;
 
     return {
-      token: 'test',
+      token: this.jwt.sign({ email }),
       user,
     };
   }
